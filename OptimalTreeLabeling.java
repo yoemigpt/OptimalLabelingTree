@@ -16,7 +16,6 @@ public class OptimalTreeLabeling implements OptimalTreeLabelingInterface {
 		public int minimumLabelWeight(ArrayList<LinkedList<Integer>> neighbours, HashSet<Integer> labels) {
 
 				int N = neighbours.size();
-				int w = 0;
 				int r = 0;
 
 				while (neighbours.get(r).size() < 2) r++;
