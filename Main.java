@@ -10,7 +10,6 @@ public class Main {
         } catch (Exception e) {
           System.err.println("This file does not exist.");
         }
-
       }
     }
 }
