@@ -24,24 +24,24 @@ public class OptimalTreeLabeling implements OptimalTreeLabelingInterface {
 				boolean[] vertices = new boolean[N];
 				for(int v = 0; v < N; v++) {
 					vertices[v] = false;
-					if(neighbours.get(v).size() == 1) {
-							if(labels.contains(v)) {
-									weights[0][v] = 1;
-							}
-							else {
-									weights[0][v] = 0;
-							}
-							weights[1][v] = 1 - weights[0][v];
-					}
 				}
 
-				minimumLabelWeight(r, neighbours, weights, vertices);
+				minimumLabelWeight(r, neighbours, labels, weights, vertices);
 				return (weights[1][r] > weights[0][r]) ? weights[0][r] : weights[1][r];
 		}
 
-		void minimumLabelWeight(int v, ArrayList<LinkedList<Integer>> neighbours, int[][] weights, boolean[] vertices) {
+		void minimumLabelWeight(int v, ArrayList<LinkedList<Integer>> neighbours, HashSet<Integer> labels, int[][] weights, boolean[] vertices) {
 				vertices[v] = true;
-				if(neighbours.get(v).size() > 1) {
+				if(neighbours.get(v).size() == 1) {
+						if(labels.contains(v)) {
+								weights[0][v] = 1;
+						}
+						else {
+								weights[0][v] = 0;
+						}
+						weights[1][v] = 1 - weights[0][v];
+				}
+				else {
 						weights[1][v] = 0;
 						weights[0][v] = 0;
 						for(int s : neighbours.get(v)) {
