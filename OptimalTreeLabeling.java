@@ -46,7 +46,7 @@ public class OptimalTreeLabeling implements OptimalTreeLabelingInterface {
 						weights[0][v] = 0;
 						for(int s : neighbours.get(v)) {
 								if(!vertices[s]) {
-										minimumLabelWeight(s, neighbours, weights, vertices);
+										minimumLabelWeight(s, neighbours, labels, weights, vertices);
 										for(int i = 0; i < 2; i++) {
 												weights[i][v] += ((weights[i][s] < 1 + weights[1-i][s]) ? weights[i][s] : (1 + weights[1-i][s]));
 										}
