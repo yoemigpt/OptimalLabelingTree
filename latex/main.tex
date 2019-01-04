@@ -1,0 +1,308 @@
+%++++++++++++++++++++++++++++++++++++++++
+% Don't modify this section unless you know what you're doing!
+\documentclass[letterpaper,12pt]{article}
+\usepackage{tabularx} % extra features for tabular environment
+\usepackage{amsmath}  % improve math presentation
+\usepackage{graphicx} % takes care of graphic including machinery
+\usepackage{cite} % takes care of citations
+\usepackage{hyperref} % adds hyper links inside the generated pdf file
+\usepackage[linesnumbered,boxed]{algorithm2e}
+\usepackage{tikz}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{array,longtable}
+\usepackage{geometry}
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+\usepackage{verbatim}
+\usetikzlibrary{arrows,shapes}
+
+\begin{document}
+
+\title{Optimal Tree Labeling}
+\author{Mohamed Babana}
+\date{\today}
+\maketitle
+
+\section{Problem description}
+
+We have a tree $T = (V, E)$ and $S$ a finite set of labels, where $V$ is the set of vertices and $E$ is the set of edges. Every vertex $v \in V$ has a label $L(v)$, which is a subset of $S$. For $e = (u,v) \in E$, we define the weight $w(e)$ as the Hamming distance between $L(v)$ and $L(v)$. In \textit{the optimal tree labeling problem}, you are given an unrooted tree with the labels of all the leaf vertices. The goal is to find some way to label all the non-leaf vertices, such that        the total weight of all the edges in the tree is minimized under this labeling.
+
+\section{Solution}
+
+\subsection{Solution with \texorpdfstring{$|S| = 1$}{TEXT}}
+Since $|S| = 1$, we can assume that the labeling is binary $$L(v) = \left\{\begin{array}{cl}
+    1 & \text{if the vertex $v$ has $S$ as label}\\
+    0 & \text{otherwise}
+\end{array}\right.$$
+We will call \textbf{admissible binary labeling} every binary vertex labeling whose restriction on the set of leaves coincides with a given binary labeling of leaves.
+
+If all vertices of $T$ are leaves, then there is nothing to solve, so we assume that there exists a vertex $r$ of $T$ which is not a leaf. Fix it as a root of $T$. For each vertex $v$ of $T$, let $T_v$ be the subtree of $T$ rooted at $v$. Given an admissible labeling $L$ of $T$ and a vertex $v$ of $T$, let $w(v,L)$ be the total weight of edges of $T_v$. For each vertex $v$ and $i = 0,1$, we define $w_i(v)$ as the minimum total weight of edges of $T_v$ taken over all admissible binary labeling of $T$ such that $v$ is labeled by $i$, i.e. $$w_i(v) = \min_{\substack{\text{admissible binary labeling $L$ of $T$} \\ L(v) = i}} w(v, L).$$
+\begin{center}
+    \fbox{The minimum total edge weight which we are looking for is $\min\{w_0(r), w_1(r)\}$}.
+\end{center}
+
+Let $L$ be an admissible labeling of $T$ and $v$ a non-leaf vertex. Since $\{T_u : u\text{ is a child of }v\}$ are disjoints, $$\begin{array}{ccl}
+    w(v, L) &=& \displaystyle\sum_{\substack{u\text{ is a child of }v\\ e =(u,v)}} w(e) + w(u, L)\\
+    &=& \displaystyle\sum_{\substack{u\text{ is a child of }v\\ L(u)=L(v)}} w(u, L) + \sum_{\substack{u\text{ is a child of }v\\ L(u)=1-L(v)}} 1+w(u, L) \end{array}$$ In addition $w(u, L) \ge w_{L(u)}(u)$, so $$\begin{array}{ccl}
+    w(v,L) & \ge & \displaystyle \sum_{\substack{u\text{ is a child of }v\\ L(u)=L(v)}} w_{L(v)}(u) + \sum_{\substack{u\text{ is a child of }v\\ L(u)=1-L(v)}} 1+w_{1-L(v)}(u)\\
+     & \ge & \displaystyle \sum_{u\text{ is a child of }v} \min \{w_{L(v)}(u), 1+w_{1-L(v)}(u)\}.
+\end{array} .$$
+Hence, for each $v\in V$ and $i=0,1$ we have $$w_i(v) \ge \sum_{u\text{ is a child of }v} \min\{w_i(u),1+w_{1-i}(u)\}.$$
+
+On the other hand, for each vertex $v\in V$ and $i = 0,1$ let $L_{v,i}$ be an admissible binary labeling such that $L_{v,i}(v) = i$ and $w_i(v) = w(v, L_{v,i})$.
+
+We label $v$ by $i$ and for every child $u$ of $v$, if $w_i(u) < 1 + w_{1-i}(u)$ we label $u$ by $i$ and the subtree $T_u$ with respect to $L_{u, i}$, otherwise we label $u$ by $1-i$ and the subtree $T_u$ with respect to $L_{u, 1-i}$. We just construct an admissible labeling $L'$ such that $L'(v) = i$ and for every child $u$ of $v$ $w(u, L') = \min \{w_i(u), 1+w_{1-i}(u)\}$, then $$w(v, L') = \sum_{u\text{ is a child of }v} \min\{w_i(u),1+w_{1-i}(u)\}.$$ Since $w_i(v) \ge w(v, L')$, we prove that $$w_i(v) \le \sum_{u\text{ is a child of }v} \min\{w_i(u),1+w_{1-i}(u)\}.$$ Finally for each $v \in V$ and $i = 0,1$ we have the following recursive formula to compute $w_i(v)$, $$w_i(v) = \sum_{u\text{ is a child of }v} \min\{w_i(u),1+w_{1-i}(u)\}. $$
+
+\subsubsection{Algorithm}
+Using the above results we can write the following pseudocode :
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\textbf{Input} : $T$ unrooted tree, $L$ a binary labeling of leaves \\
+\textbf{Output} : total minimum weight over all admissible binary labeling of $T$\\
+ find $r$ a non-leaf vertex and root the tree $T$ on $r$\;
+ \Return $\min \{w_0(r, T, L), w_1(r, T, L)\}$\;
+ \caption{$OptimalTreeBinaryLabeling$}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\textbf{Input} : $v$ a vertex, $T$ a rooted tree, $L$ a binary labeling of leaves \\
+\textbf{Output} : minimum weight of the set of edges $T_v$ over all admissible labeling such that $v$ has $i$ as label\\
+ \eIf{$v$ is a leaf}{
+    \eIf{$L(v) = i$}{\Return{0}\;}{\Return{$\infty$}\;}
+  }{
+   \Return{$\sum_{u\text{ is a child of }v} \min\{w_i(u),1+w_{1-i}(u)\}$}\;
+  }
+ \caption{$w_i$}
+\end{algorithm}
+
+\subsubsection{Analysis of the algorithm}
+
+\begin{itemize}
+    \item The termination of the algorithm is clear since we have a initial condition on leaf vertices.
+    \item Using a \textbf{depth first search}, we can solve the problem in $O(|E|) = O(|V|)$. The algorithm has a linear time complexity.
+\end{itemize}
+\subsection{Solution for the general case}
+
+To solve the problem with an arbitrary $S$, we sum the results over all $s \in S$. We have the following pseudocode :
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\textbf{Input} : $T$ unrooted tree, $L$ a labeling of leaves, $S$ set of labels \\
+\textbf{Output} : total minimum weight over all admissible labeling\\
+$L'$ a binary labeling\;
+$w = 0$\;
+ \For{$s\in S$}{\For{$v \in V$}{\eIf{$v$ is a leaf}{\eIf{$s \in L(v)$}{$L'(v) = 1$}{$L'(v) = 0$}}{}}{}{}$w = w + OptimalTreeBinaryLabeling(T,L')$}{}{}
+ \Return $w$\;
+ \caption{optimal tree labeling}
+\end{algorithm}
+
+\subsection{Example}
+
+In this section we apply the algorithm to the following example :
+
+
+\tikzstyle{vertex}=[circle,fill=black!25,minimum size=20pt,inner sep=0pt]
+\tikzstyle{selected vertex} = [vertex, fill=red!24]
+\tikzstyle{edge} = [draw,thick,-]
+\tikzstyle{weight} = [font=\small]
+\tikzstyle{selected edge} = [draw,line width=5pt,-,red!50]
+\tikzstyle{ignored edge} = [draw,line width=5pt,-,black!20]
+\begin{center}
+    \begin{tikzpicture}[auto,swap]
+        % Draw a 7,11 network
+        % First we draw the vertices
+        \node[vertex, label=$3$] (3) at (-1,0) {};
+        \node[vertex, label=$4$] (4) at (1,0) {};
+        \node[vertex, label=$1$] (1) at (-2,1) {$\{A, C\}$};
+        \node[vertex, label=$5$] (5) at (-2,-1) {$\{B, C\}$};
+        \node[vertex, label=$2$] (2) at (2,1) {$\{A, B\}$};
+        \node[vertex, label=$6$] (6) at (2,-1) {$\{B\}$};
+
+        \path[edge] (1) -- node[weight] {} (3);
+        \path[edge] (3) -- node[weight] {} (4);
+        \path[edge] (3) -- node[weight] {} (5);
+        \path[edge] (2) -- node[weight] {} (4);
+        \path[edge] (4) -- node[weight] {} (6);
+
+    \end{tikzpicture}
+\end{center}
+We start by appliying the $OptimalTreeBinaryLabeling$ for the 'A'
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}[auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \node[vertex, label=$3$] (3) at (-1,0) {};
+    \node[vertex, label=$4$] (4) at (1,0) {};
+    \node[vertex, label=$1$] (1) at (-2,1) {$\{A\}$};
+    \node[vertex, label=$5$] (5) at (-2,-1) {$\emptyset$};
+    \node[vertex, label=$2$] (2) at (2,1) {$\{A\}$};
+    \node[vertex, label=$6$] (6) at (2,-1) {$\emptyset$};
+
+    \path[edge] (1) -- node[weight] {} (3);
+    \path[edge] (3) -- node[weight] {} (4);
+    \path[edge] (3) -- node[weight] {} (5);
+    \path[edge] (2) -- node[weight] {} (4);
+    \path[edge] (4) -- node[weight] {} (6);
+
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}[auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \node[vertex, label=$3$] (3) at (0,0) {};
+    \node[vertex, label=$4$] (4) at (1.5,-1) {};
+    \node[vertex, label=below:$1$] (1) at (0,-1) {$1$};
+    \node[vertex, label=$5$] (5) at (-1.5,-1) {$0$};
+    \node[vertex, label=$2$] (2) at (1,-2) {$1$};
+    \node[vertex, label=$6$] (6) at (2,-2) {$0$};
+
+    \path[edge] (1) -- node[weight] {} (3);
+    \path[edge] (3) -- node[weight] {} (4);
+    \path[edge] (3) -- node[weight] {} (5);
+    \path[edge] (2) -- node[weight] {} (4);
+    \path[edge] (4) -- node[weight] {} (6);
+
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+We have $w_0(1) = w_1(5) = w_0(2) = w_1(6) = \infty$ and $w_1(1) = w_0(5) = w_1(2) = w_0(6) = 0$ then $$w_0(4) = \min\{w_0(2), 1+w_1(2)\} + \min \{w_0(6), 1+w_1(6)\} =  \min\{\infty, 1+0\} + \min\{0, 1+\infty\} = 1$$ and $$w_1(4) = \min\{w_1(2), 1+w_0(2)\} + \min \{w_1(6), 1+w_0(6)\} =  \min\{0, 1+\infty\} + \min\{\infty, 1+0\} = 1$$ Finally $$\begin{array}{ccl}
+    w_0(3) &=&  \min\{w_0(1), 1+w_1(1)\} + \min\{w_0(5), 1+w_1(5)\} + \min\{w_0(4), 1+w_1(4)\} \\
+     &=& \min\{\infty, 1+0\} + \min\{0, 1+\infty\} + \min\{1, 1+1\} \\
+    w_0(3) &=& 2
+\end{array} $$ and
+
+$$\begin{array}{ccl}
+    w_1(3) &=&  \min\{w_1(1), 1+w_0(1)\} + \min\{w_1(5), 1+w_0(5)\} + \min\{w_1(4), 1+w_0(4)\} \\
+     &=& \min\{0, 1+\infty\} + \min\{\infty, 1+0\} + \min\{1, 1+1\} \\
+    w_1(3) &=& 2
+\end{array} $$
+
+In this case the minimal weight is $2$.
+
+Applying the $OptimalTreeBinaryLabeling$ for the 'B'
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}[auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \node[vertex, label=$3$] (3) at (-1,0) {};
+    \node[vertex, label=$4$] (4) at (1,0) {};
+    \node[vertex, label=$1$] (1) at (-2,1) {$\emptyset$};
+    \node[vertex, label=$5$] (5) at (-2,-1) {$\{B\}$};
+    \node[vertex, label=$2$] (2) at (2,1) {$\{B\}$};
+    \node[vertex, label=$6$] (6) at (2,-1) {$\{B\}$};
+
+    \path[edge] (1) -- node[weight] {} (3);
+    \path[edge] (3) -- node[weight] {} (4);
+    \path[edge] (3) -- node[weight] {} (5);
+    \path[edge] (2) -- node[weight] {} (4);
+    \path[edge] (4) -- node[weight] {} (6);
+
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}[auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \node[vertex, label=$3$] (3) at (0,0) {};
+    \node[vertex, label=$4$] (4) at (1.5,-1) {};
+    \node[vertex, label=below:$1$] (1) at (0,-1) {$0$};
+    \node[vertex, label=$5$] (5) at (-1.5,-1) {$1$};
+    \node[vertex, label=$2$] (2) at (1,-2) {$1$};
+    \node[vertex, label=$6$] (6) at (2,-2) {$1$};
+
+    \path[edge] (1) -- node[weight] {} (3);
+    \path[edge] (3) -- node[weight] {} (4);
+    \path[edge] (3) -- node[weight] {} (5);
+    \path[edge] (2) -- node[weight] {} (4);
+    \path[edge] (4) -- node[weight] {} (6);
+
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+We have $w_1(1) = w_0(5) = w_0(2) = w_0(6) = \infty$ and $w_0(1) = w_1(5) = w_1(2) = w_1(6) = 0$ then $$w_0(4) = \min\{w_0(2), 1+w_1(2)\} + \min \{w_0(6), 1+w_1(6)\} =  \min\{\infty, 1+0\} + \min\{\infty, 1+0\} = 2$$ and $$w_1(4) = \min\{w_1(2), 1+w_0(2)\} + \min \{w_1(6), 1+w_0(6)\} =  \min\{0, 1+\infty\} + \min\{0, 1+\infty\} = 0$$ Finally $$\begin{array}{ccl}
+    w_0(3) &=&  \min\{w_0(1), 1+w_1(1)\} + \min\{w_0(5), 1+w_1(5)\} + \min\{w_0(4), 1+w_1(4)\} \\
+     &=& \min\{0, 1+\infty\} + \min\{\infty, 1+0\} + \min\{2, 1+0\} \\
+    w_0(3) &=& 2
+\end{array} $$ and
+
+$$\begin{array}{ccl}
+    w_1(3) &=&  \min\{w_1(1), 1+w_0(1)\} + \min\{w_1(5), 1+w_0(5)\} + \min\{w_1(4), 1+w_0(4)\} \\
+     &=& \min\{\infty, 1+0\} + \min\{0, 1+\infty\} + \min\{0, 2+1\} \\
+    w_1(3) &=& 1
+\end{array} $$
+
+In this case the minimal weight is $1$.
+
+Applying the $OptimalTreeBinaryLabeling$ for the 'C'
+
+\begin{center}
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}[auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \node[vertex, label=$3$] (3) at (-1,0) {};
+    \node[vertex, label=$4$] (4) at (1,0) {};
+    \node[vertex, label=$1$] (1) at (-2,1) {$\{C\}$};
+    \node[vertex, label=$5$] (5) at (-2,-1) {$\{C\}$};
+    \node[vertex, label=$2$] (2) at (2,1) {$\emptyset$};
+    \node[vertex, label=$6$] (6) at (2,-1) {$\emptyset$};
+
+    \path[edge] (1) -- node[weight] {} (3);
+    \path[edge] (3) -- node[weight] {} (4);
+    \path[edge] (3) -- node[weight] {} (5);
+    \path[edge] (2) -- node[weight] {} (4);
+    \path[edge] (4) -- node[weight] {} (6);
+
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}{0.45\textwidth}
+\begin{tikzpicture}[auto,swap]
+    % Draw a 7,11 network
+    % First we draw the vertices
+    \node[vertex, label=$3$] (3) at (0,0) {};
+    \node[vertex, label=$4$] (4) at (1.5,-1) {};
+    \node[vertex, label=below:$1$] (1) at (0,-1) {$1$};
+    \node[vertex, label=$5$] (5) at (-1.5,-1) {$1$};
+    \node[vertex, label=$2$] (2) at (1,-2) {$0$};
+    \node[vertex, label=$6$] (6) at (2,-2) {$0$};
+
+    \path[edge] (1) -- node[weight] {} (3);
+    \path[edge] (3) -- node[weight] {} (4);
+    \path[edge] (3) -- node[weight] {} (5);
+    \path[edge] (2) -- node[weight] {} (4);
+    \path[edge] (4) -- node[weight] {} (6);
+
+\end{tikzpicture}
+\end{minipage}
+\end{center}
+We have $w_0(1) = w_0(5) = w_1(2) = w_1(6) = \infty$ and $w_1(1) = w_1(5) = w_0(2) = w_0(6) = 0$ then $$w_0(4) = \min\{w_0(2), 1+w_1(2)\} + \min \{w_0(6), 1+w_1(6)\} =  \min\{0, 1+\infty\} + \min\{0, 1+\infty\} = 0$$ and $$w_1(4) = \min\{w_1(2), 1+w_0(2)\} + \min \{w_1(6), 1+w_0(6)\} =  \min\{\infty, 1+0\} + \min\{\infty, 1+0\} = 2$$ Finally $$\begin{array}{ccl}
+    w_0(3) &=&  \min\{w_0(1), 1+w_1(1)\} + \min\{w_0(5), 1+w_1(5)\} + \min\{w_0(4), 1+w_1(4)\} \\
+     &=& \min\{\infty, 1+0\} + \min\{\infty, 1+0\} + \min\{0, 1+2\} \\
+    w_0(3) &=& 2
+\end{array} $$ and
+
+$$\begin{array}{ccl}
+    w_1(3) &=&  \min\{w_1(1), 1+w_0(1)\} + \min\{w_1(5), 1+w_0(5)\} + \min\{w_1(4), 1+w_0(4)\} \\
+     &=& \min\{0, 1+\infty\} + \min\{0, 1+\infty\} + \min\{2, 1+0\} \\
+    w_1(3) &=& 1
+\end{array} $$
+
+In this case the minimal weight is $1$. Then the total minimum weight is $1+1+2 = 4$.
+
+\section{Tests}
+\input{log}
+
+\end{document}
