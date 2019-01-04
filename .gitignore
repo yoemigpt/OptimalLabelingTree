@@ -1,4 +1,4 @@
 *.class
 *.in
 *.out
-log*.txt
+log*

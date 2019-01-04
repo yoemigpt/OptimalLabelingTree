@@ -29,11 +29,6 @@ then
     exit -2;
 fi
 
-dir_bin=`pwd`
-
-# Check if time exists under Linux
-echo "Checking /usr/bin/time..."
-/usr/bin/time -f %U echo 2>&1 > /dev/null
 underlinux=$?
 
 # Set limits of time
@@ -51,7 +46,7 @@ fi
 
 function Run {
   #statements
-  logfile="log-${date}.txt"
+  logfile="log-${date}.md"
 
   echo -e "\nCompilation ..."
   echo -e "\nCompilation ..." >> ${logfile}
@@ -85,7 +80,8 @@ function Run {
 
 
 
-  echo -e "#input file\tweight\tCPU" >> $logfile
+  echo -e "| input file |weight | CPU |" >> $logfile
+  echo -e "|:-----:|:-----:|:-----:|" >> $logfile
   echo -e  "input file\tweight\tCPU"
 
 
@@ -101,7 +97,7 @@ function Run {
     fi
     w=`cat ${dir_tests}/${test%.in}.out`
     echo -e "${test%.in}\t${w}\t${t}"
-    echo -e "${test%.in}\t${w}\t${t}" >> $logfile
+    echo -e "| ${test%.in} | ${w} | ${t} |" >> $logfile
 
   done
 
