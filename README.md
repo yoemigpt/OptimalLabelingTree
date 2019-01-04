@@ -1,7 +1,7 @@
 # Optimal Tree Labeling
 
-Run `make` from this directory
+`make`
 
-For one file run : `make run < file_name`
+For one file, `make run < file_name`
 
-For a set of files, put all files in the one folder `name_folder` and run : `./run.sh name_folder`
+For a set of files, put all files in the one folder `folder` and `./run.sh path_of_folder`
