@@ -1,48 +1,85 @@
-import java.util.*;
-import java.io.*;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+/**
+ * @author Mohamed Babana, Ecole Polytechnique
+ * @version december 2018
+ */
 
 public class Main {
+
   public static void main(String[] args) {
+    // Create a scanner to read the input data from System.in
     Scanner sc = new Scanner(System.in);
+
+    // Get the number of vertices
     int N = sc.nextInt();
+
+    // Get the number of leaf vertices
     int L = sc.nextInt();
 
-    ArrayList<LinkedList<Integer>> neighbours = new ArrayList<LinkedList<Integer>>();
-    for(int i = 0; i < N; i++) {
-        neighbours.add(new LinkedList<Integer>());
+    // For every vertex we store its neighbours in a List<Integer>
+    ArrayList<List<Integer>> neighbours = new ArrayList<List<Integer>>();
+    for(int v = 0; v < N; v++) {
+      neighbours.add(new LinkedList<Integer>());
     }
 
-    for(int i = 0; i < N-1; i++) {
-        int u = sc.nextInt()-1;
-        int v = sc.nextInt()-1;
+    // For every edge e = {u, v} we add v to the neighbours of u and
+    // we add to the neighbours of v
+    for(int e = 0; e < N-1; e++) {
+      // Get the first vertex u of the edge
+      int u = sc.nextInt()-1;
 
-        neighbours.get(u).add(v);
-        neighbours.get(v).add(u);
+      // Get the second vertex v of the edge
+      int v = sc.nextInt()-1;
+
+      // Add v to the neighbours of u
+      neighbours.get(u).add(v);
+
+      // Add u to the neighbours of v
+      neighbours.get(v).add(u);
     }
 
-    ArrayList<Character> labelValues = new ArrayList<Character>();
-    ArrayList<HashSet<Integer>> labels = new ArrayList<Set<Integer>>();
+    // For every character c we store the set of leaf vertices with labels contain
+    // the character c in a Set<Integer>.
+    Map<Character, Set<Integer>> labels = new HashMap<Character, Set<Integer>>();
 
-    for(int i = 0; i < L; i++) {
-        int u = sc.nextInt()-1;
-        assert(neighbours.get(u).size() == 1);
-        String label = sc.next();
-        if(!label.equals("$")) {
-            for(char c : label.toCharArray()) {
-                int index = labelValues.indexOf(c);
-                if(index == -1) {
-                    Set<Integer> set = new HashSet<Integer>();
-                    set.add(u);
-                    labels.add(set);
-                    labelValues.add(c);
-                }
-                else {
-                    labels.get(index).add(u);
-                }
-            }
+    for(int l = 0; l < L; l++) {
+
+      // Get the leaf vertex.
+      int u = sc.nextInt()-1;
+
+      // Assert that the vertex is a leaf by checking the number of their neighbours.
+      assert(neighbours.get(u).size() == 1);
+
+      // Get the label string.
+      String label = sc.next();
+
+      // Check if the label is different to "$" which represents the empty set.
+      if(!label.equals("$")) {
+        // For every character c in the label add the vertex u to the Set<Integer>
+        // corresponding to the character c.
+        for(char c : label.toCharArray()) {
+          // Check if the character c already exists
+          if(labels.get(c) == null) {
+            // Create a new set for the character c and add it to labels.
+            labels.put(c, new HashSet<Integer>());
+          }
+          // Add the vertex u to Set<Integer> corresponding to the character c.
+          labels.get(c).add(u);
         }
+      }
     }
+    // Close the Scanner.
     sc.close();
-    System.out.println((new OptimalTreeLabeling()).minimumLabelingWeight(neighbours, labels));
+
+    // Print the minimum weight.
+    System.out.println(OptimalTreeLabeling.minimumLabelingWeight(neighbours, labels.values()));
   }
 }
