@@ -2,6 +2,6 @@
 
 `make`
 
-For one file, `make run < file_name`
+For one file, `make run < file_path`
 
-For a set of files, put all files in the one folder `folder` and `./run.sh path_of_folder`
+For a set of files, put all files in the one folder `folder` and `./run.sh folder_path`
