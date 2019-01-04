@@ -37,7 +37,7 @@ echo "Checking /usr/bin/time..."
 underlinux=$?
 
 # Set limits of time
-ulimit -t 10
+ulimit -t 30
 echo "-----"
 
 date=`date +%Y%m%d_%H%M%S`
