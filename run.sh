@@ -68,17 +68,15 @@ function Run {
   echo "Repport : " > ${logfile}
 
   echo "Machine : " `hostname` "."
-  echo "#Machine : " `hostname` "."  > $logfile
+  echo "### Machine : " `hostname` "."  > $logfile
   echo "CPU :$cpuinfo"
-  echo "#CPU :$cpuinfo"  >> $logfile
+  echo "### CPU :$cpuinfo"  >> $logfile
   echo "Start date : $date."
-  echo "#Start date : $date."  >> $logfile
+  echo "### Start date : $date."  >> $logfile
   echo "Limit of `ulimit -t` seconds per test."
-  echo "#Limit of `ulimit -t` seconds per test."  >> $logfile
+  echo "### Limit of `ulimit -t` seconds per test."  >> $logfile
   echo
-  echo "#" >> $logfile
-
-
+  echo >> $logfile
 
   echo -e "| input file |weight | CPU |" >> $logfile
   echo -e "|:-----:|:-----:|:-----:|" >> $logfile
