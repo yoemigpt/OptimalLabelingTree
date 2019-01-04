@@ -17,7 +17,6 @@ public class OptimalTreeLabeling {
 	 * @param labels collection of a set vertices, the set of vertices contains the leaf vertices which have the character in their labels.
 	 * @return the minimum labeling weight
 	 */
-
 	static int minimumLabelingWeight(ArrayList<List<Integer>> neighbours, Collection<Set<Integer>> labels) {
 		// Initialize the weight to 0.
 		int w = 0;
@@ -48,9 +47,6 @@ public class OptimalTreeLabeling {
 		if(r == N) {
 			return 0;
 		}
-
-		// Create a array of size 2xN to compute w0 and w1
-		// int[][] weights = new int[2][N];
 
 		// Create a boolean array to store the visited vertices.
 		boolean[] vertices = new boolean[N];

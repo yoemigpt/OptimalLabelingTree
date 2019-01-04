@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class Main {
 
   public static void main(String[] args) {
-    // Create a scanner to read the input data from System.in
+    // Create a Scanner to read the input data from System.in
     Scanner sc = new Scanner(System.in);
 
     // Get the number of vertices
@@ -31,7 +31,7 @@ public class Main {
     }
 
     // For every edge e = {u, v} we add v to the neighbours of u and
-    // we add to the neighbours of v
+    // we add u to the neighbours of v
     for(int e = 0; e < N-1; e++) {
       // Get the first vertex u of the edge
       int u = sc.nextInt()-1;
@@ -51,7 +51,6 @@ public class Main {
     Map<Character, Set<Integer>> labels = new HashMap<Character, Set<Integer>>();
 
     for(int l = 0; l < L; l++) {
-
       // Get the leaf vertex.
       int u = sc.nextInt()-1;
 
@@ -61,9 +60,9 @@ public class Main {
       // Get the label string.
       String label = sc.next();
 
-      // Check if the label is different to "$" which represents the empty set.
+      // Check if the label is different from "$" which represents the empty set.
       if(!label.equals("$")) {
-        // For every character c in the label add the vertex u to the Set<Integer>
+        // For every character c in the label add the vertex u to the set of vertices
         // corresponding to the character c.
         for(char c : label.toCharArray()) {
           // Check if the character c already exists
@@ -71,7 +70,7 @@ public class Main {
             // Create a new set for the character c and add it to labels.
             labels.put(c, new HashSet<Integer>());
           }
-          // Add the vertex u to Set<Integer> corresponding to the character c.
+          // Add the vertex u to the set of vertices corresponding to the character c.
           labels.get(c).add(u);
         }
       }
