@@ -21,7 +21,7 @@ public class Main {
     }
 
     ArrayList<Character> labelValues = new ArrayList<Character>();
-    ArrayList<HashSet<Integer>> labels = new ArrayList<HashSet<Integer>>();
+    ArrayList<HashSet<Integer>> labels = new ArrayList<Set<Integer>>();
 
     for(int i = 0; i < L; i++) {
         int u = sc.nextInt()-1;
@@ -31,7 +31,7 @@ public class Main {
             for(char c : label.toCharArray()) {
                 int index = labelValues.indexOf(c);
                 if(index == -1) {
-                    HashSet<Integer> set = new HashSet<Integer>();
+                    Set<Integer> set = new HashSet<Integer>();
                     set.add(u);
                     labels.add(set);
                     labelValues.add(c);
@@ -43,6 +43,6 @@ public class Main {
         }
     }
     sc.close();
-    System.out.println((new OptimalTreeLabeling()).minimumLabelWeight(neighbours, labels));
+    System.out.println((new OptimalTreeLabeling()).minimumLabelingWeight(neighbours, labels));
   }
 }

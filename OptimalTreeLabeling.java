@@ -2,16 +2,16 @@ import java.util.*;
 
 public class OptimalTreeLabeling {
 
-		public int minimumLabelWeight(ArrayList<LinkedList<Integer>> neighbours, ArrayList<HashSet<Integer>> labels) {
+		public int minimumLabelingWeight(ArrayList<LinkedList<Integer>> neighbours, ArrayList<Set<Integer>> labels) {
 				int w = 0;
 
 				for(HashSet<Integer> alabels : labels) {
-						w += minimumLabelWeight(neighbours, alabels);
+						w += minimumLabelingWeight(neighbours, alabels);
 				}
 				return w;
 		}
 
-		public int minimumLabelWeight(ArrayList<LinkedList<Integer>> neighbours, HashSet<Integer> labels) {
+		public int minimumLabelingWeight(ArrayList<LinkedList<Integer>> neighbours, Set<Integer> labels) {
 
 				int N = neighbours.size();
 				int r = 0;
@@ -24,11 +24,11 @@ public class OptimalTreeLabeling {
 					vertices[v] = false;
 				}
 
-				minimumLabelWeight(r, neighbours, labels, weights, vertices);
+				minimumLabelingWeight(r, neighbours, labels, weights, vertices);
 				return (weights[1][r] > weights[0][r]) ? weights[0][r] : weights[1][r];
 		}
 
-		void minimumLabelWeight(int v, ArrayList<LinkedList<Integer>> neighbours, HashSet<Integer> labels, int[][] weights, boolean[] vertices) {
+		void minimumLabelingWeight(int v, ArrayList<LinkedList<Integer>> neighbours, Set<Integer> labels, int[][] weights, boolean[] vertices) {
 				vertices[v] = true;
 				if(neighbours.get(v).size() == 1) {
 						if(labels.contains(v)) {
@@ -44,7 +44,7 @@ public class OptimalTreeLabeling {
 						weights[0][v] = 0;
 						for(int s : neighbours.get(v)) {
 								if(!vertices[s]) {
-										minimumLabelWeight(s, neighbours, labels, weights, vertices);
+										minimumLabelingWeight(s, neighbours, labels, weights, vertices);
 										for(int i = 0; i < 2; i++) {
 												weights[i][v] += ((weights[i][s] < 1 + weights[1-i][s]) ? weights[i][s] : (1 + weights[1-i][s]));
 										}
