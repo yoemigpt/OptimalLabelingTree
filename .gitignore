@@ -1,3 +1,4 @@
 *.class
-tests/*
-simple_tests/*
+*.in
+*.out
+log*.txt

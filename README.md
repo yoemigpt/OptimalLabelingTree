@@ -1,1 +1,1 @@
-# OptimalLabelingTree
+# Optimal Tree Labeling
