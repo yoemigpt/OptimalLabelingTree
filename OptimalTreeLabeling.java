@@ -1,8 +1,7 @@
 import java.util.*;
 
-public class OptimalTreeLabeling implements OptimalTreeLabelingInterface {
+public class OptimalTreeLabeling {
 
-		@Override
 		public int minimumLabelWeight(ArrayList<LinkedList<Integer>> neighbours, ArrayList<HashSet<Integer>> labels) {
 				int w = 0;
 
@@ -12,7 +11,6 @@ public class OptimalTreeLabeling implements OptimalTreeLabelingInterface {
 				return w;
 		}
 
-		@Override
 		public int minimumLabelWeight(ArrayList<LinkedList<Integer>> neighbours, HashSet<Integer> labels) {
 
 				int N = neighbours.size();
