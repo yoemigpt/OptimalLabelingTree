@@ -1,5 +1,7 @@
-.PHONY : tex
+.PHONY : all clean
 
-tex :
-	pdflatex main.tex
-	mv main.pdf ..
+all: main.tex
+	@pdflatex main.tex > /dev/null 2>&1
+
+clean:
+	@rm -rf *.out *.aux *.log
