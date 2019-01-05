@@ -35,7 +35,7 @@ $(class_d):
 all: $(class_d)/OptimalTreeLabeling.class
 
 run:
-	@$(JVM) $(JVFLAGS) OptimalTreeLabeling < $(shell readlink -f $(FILE))
+	@$(JVM) $(JVFLAGS) OptimalTreeLabeling < $(FILE)
 
 run-all:
 	@$(source_d)/$(RUN) $(shell readlink -f $(FOLDER))
