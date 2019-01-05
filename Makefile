@@ -11,8 +11,8 @@ SHELL := bash
 
 RUN=./run.sh
 
-$RM=readme.text
-$PDF=report.pdf
+RM=readme.text
+PDF=report.pdf
 
 classpath:=$(class_d)
 
