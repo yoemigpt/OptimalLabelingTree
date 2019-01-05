@@ -48,11 +48,11 @@ tex:
 	@cd $(latex_d) && $(MAKE) --no-print-directory
 
 zip:
-	@$(MAKE) clean
-	@$(MAKE)
+	@$(MAKE) --no-print-directory clean
+	@$(MAKE) --no-print-directory
 	@$(source_d)$(RUN) tests/ $(latex_d)
-	@$(MAKE) tex
+	@$(MAKE) --no-print-directory tex
 	@cp $(latex_d)main.pdf ./
 	@mv main.pdf $(PDF)
-	@zip -r project.zip $(source_d) $(class_d) $(RM) $(PDF) Makefile
-	@$(MAKE) clean
+	@zip -q -r project.zip $(source_d) $(class_d) $(RM) $(PDF) Makefile
+	@$(MAKE) --no-print-directory clean
