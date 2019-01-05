@@ -40,7 +40,6 @@ run:
 run-all:
 	@$(source_d)/$(RUN) $(shell readlink -f $(FOLDER))
 
-
 clean:
 	@rm -rf $(class_d)/* *.zip *.pdf
 	@cd $(latex_d) && $(MAKE) --no-print-directory clean
