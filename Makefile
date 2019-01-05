@@ -32,7 +32,7 @@ $(class_d)/OptimalTreeLabeling.class: $(source_d)/*.java
 $(class_d):
 	mkdir $(class_d)
 
-all: $(class_d)/OptimalTreeLabeling.class
+all: $(class_d) $(class_d)/OptimalTreeLabeling.class
 
 run:
 	@$(JVM) $(JVFLAGS) OptimalTreeLabeling < $(FILE)
